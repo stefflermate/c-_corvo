@@ -1,0 +1,457 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Butor_rendelesModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="FizetésiMód">
+          <Key>
+            <PropertyRef Name="FizetésimódSK" />
+          </Key>
+          <Property Name="FizetésimódSK" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Mód" Type="nvarchar" MaxLength="40" />
+        </EntityType>
+        <EntityType Name="Kategoria">
+          <Key>
+            <PropertyRef Name="KategoriaSK" />
+          </Key>
+          <Property Name="KategoriaSK" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Kategoria_név" Type="nvarchar" MaxLength="40" />
+        </EntityType>
+        <EntityType Name="Márka">
+          <Key>
+            <PropertyRef Name="MárkaSK" />
+          </Key>
+          <Property Name="MárkaSK" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Márka_Név" Type="nvarchar" MaxLength="40" />
+        </EntityType>
+        <EntityType Name="Rendelés">
+          <Key>
+            <PropertyRef Name="RendelésSK" />
+          </Key>
+          <Property Name="RendelésSK" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="VásárlóFK" Type="tinyint" />
+          <Property Name="Rendelés_Dátum" Type="datetime2" Precision="7" />
+          <Property Name="Összeszerelés" Type="bit" />
+          <Property Name="FizetésimódFK" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="Rendelt_Termék">
+          <Key>
+            <PropertyRef Name="RendelelésazonosítóSK" />
+          </Key>
+          <Property Name="RendelésFK" Type="tinyint" />
+          <Property Name="TermékFK" Type="tinyint" />
+          <Property Name="Mennyiség" Type="int" />
+          <Property Name="RendelelésazonosítóSK" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Termék">
+          <Key>
+            <PropertyRef Name="TermékSK" />
+          </Key>
+          <Property Name="TermékSK" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TermékNév" Type="nvarchar" MaxLength="50" />
+          <Property Name="KategoriaFK" Type="tinyint" />
+          <Property Name="MárkaFK" Type="tinyint" />
+          <Property Name="Ár" Type="int" />
+          <Property Name="Elemszám" Type="tinyint" />
+          <Property Name="Súly" Type="int" />
+          <Property Name="Méret" Type="int" />
+        </EntityType>
+        <EntityType Name="Vásárló">
+          <Key>
+            <PropertyRef Name="VásárlóSK" />
+          </Key>
+          <Property Name="VásárlóSK" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Név" Type="nvarchar" MaxLength="40" />
+          <Property Name="Cím" Type="nvarchar" MaxLength="60" />
+          <Property Name="Email_cím" Type="nvarchar" MaxLength="40" />
+        </EntityType>
+        <Association Name="FK_Rendelés_FizetésiMód">
+          <End Role="FizetésiMód" Type="Self.FizetésiMód" Multiplicity="0..1" />
+          <End Role="Rendelés" Type="Self.Rendelés" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FizetésiMód">
+              <PropertyRef Name="FizetésimódSK" />
+            </Principal>
+            <Dependent Role="Rendelés">
+              <PropertyRef Name="FizetésimódFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelés_Vásárló">
+          <End Role="Vásárló" Type="Self.Vásárló" Multiplicity="0..1" />
+          <End Role="Rendelés" Type="Self.Rendelés" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vásárló">
+              <PropertyRef Name="VásárlóSK" />
+            </Principal>
+            <Dependent Role="Rendelés">
+              <PropertyRef Name="VásárlóFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelt_Termék_Rendelés1">
+          <End Role="Rendelés" Type="Self.Rendelés" Multiplicity="0..1" />
+          <End Role="Rendelt_Termék" Type="Self.Rendelt_Termék" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rendelés">
+              <PropertyRef Name="RendelésSK" />
+            </Principal>
+            <Dependent Role="Rendelt_Termék">
+              <PropertyRef Name="RendelésFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelt_Termék_Termék1">
+          <End Role="Termék" Type="Self.Termék" Multiplicity="0..1" />
+          <End Role="Rendelt_Termék" Type="Self.Rendelt_Termék" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Termék">
+              <PropertyRef Name="TermékSK" />
+            </Principal>
+            <Dependent Role="Rendelt_Termék">
+              <PropertyRef Name="TermékFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Termék_Kategoria">
+          <End Role="Kategoria" Type="Self.Kategoria" Multiplicity="0..1" />
+          <End Role="Termék" Type="Self.Termék" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kategoria">
+              <PropertyRef Name="KategoriaSK" />
+            </Principal>
+            <Dependent Role="Termék">
+              <PropertyRef Name="KategoriaFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Termék_Márka">
+          <End Role="Márka" Type="Self.Márka" Multiplicity="0..1" />
+          <End Role="Termék" Type="Self.Termék" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Márka">
+              <PropertyRef Name="MárkaSK" />
+            </Principal>
+            <Dependent Role="Termék">
+              <PropertyRef Name="MárkaFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Butor_rendelesModelStoreContainer">
+          <EntitySet Name="FizetésiMód" EntityType="Self.FizetésiMód" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Kategoria" EntityType="Self.Kategoria" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Márka" EntityType="Self.Márka" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rendelés" EntityType="Self.Rendelés" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rendelt_Termék" EntityType="Self.Rendelt_Termék" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Termék" EntityType="Self.Termék" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Vásárló" EntityType="Self.Vásárló" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Rendelés_FizetésiMód" Association="Self.FK_Rendelés_FizetésiMód">
+            <End Role="FizetésiMód" EntitySet="FizetésiMód" />
+            <End Role="Rendelés" EntitySet="Rendelés" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelés_Vásárló" Association="Self.FK_Rendelés_Vásárló">
+            <End Role="Vásárló" EntitySet="Vásárló" />
+            <End Role="Rendelés" EntitySet="Rendelés" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelt_Termék_Rendelés1" Association="Self.FK_Rendelt_Termék_Rendelés1">
+            <End Role="Rendelés" EntitySet="Rendelés" />
+            <End Role="Rendelt_Termék" EntitySet="Rendelt_Termék" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelt_Termék_Termék1" Association="Self.FK_Rendelt_Termék_Termék1">
+            <End Role="Termék" EntitySet="Termék" />
+            <End Role="Rendelt_Termék" EntitySet="Rendelt_Termék" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Termék_Kategoria" Association="Self.FK_Termék_Kategoria">
+            <End Role="Kategoria" EntitySet="Kategoria" />
+            <End Role="Termék" EntitySet="Termék" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Termék_Márka" Association="Self.FK_Termék_Márka">
+            <End Role="Márka" EntitySet="Márka" />
+            <End Role="Termék" EntitySet="Termék" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Butor_rendelesModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="FizetésiMód">
+          <Key>
+            <PropertyRef Name="FizetésimódSK" />
+          </Key>
+          <Property Name="FizetésimódSK" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mód" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Rendelés" Relationship="Self.FK_Rendelés_FizetésiMód" FromRole="FizetésiMód" ToRole="Rendelés" />
+        </EntityType>
+        <EntityType Name="Kategoria">
+          <Key>
+            <PropertyRef Name="KategoriaSK" />
+          </Key>
+          <Property Name="KategoriaSK" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Kategoria_név" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Termék" Relationship="Self.FK_Termék_Kategoria" FromRole="Kategoria" ToRole="Termék" />
+        </EntityType>
+        <EntityType Name="Márka">
+          <Key>
+            <PropertyRef Name="MárkaSK" />
+          </Key>
+          <Property Name="MárkaSK" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Márka_Név" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Termék" Relationship="Self.FK_Termék_Márka" FromRole="Márka" ToRole="Termék" />
+        </EntityType>
+        <EntityType Name="Rendelés">
+          <Key>
+            <PropertyRef Name="RendelésSK" />
+          </Key>
+          <Property Name="RendelésSK" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VásárlóFK" Type="Byte" />
+          <Property Name="Rendelés_Dátum" Type="DateTime" Precision="7" />
+          <Property Name="Összeszerelés" Type="Boolean" />
+          <Property Name="FizetésimódFK" Type="Byte" />
+          <NavigationProperty Name="FizetésiMód" Relationship="Self.FK_Rendelés_FizetésiMód" FromRole="Rendelés" ToRole="FizetésiMód" />
+          <NavigationProperty Name="Vásárló" Relationship="Self.FK_Rendelés_Vásárló" FromRole="Rendelés" ToRole="Vásárló" />
+          <NavigationProperty Name="Rendelt_Termék" Relationship="Self.FK_Rendelt_Termék_Rendelés1" FromRole="Rendelés" ToRole="Rendelt_Termék" />
+        </EntityType>
+        <EntityType Name="Rendelt_Termék">
+          <Key>
+            <PropertyRef Name="RendelelésazonosítóSK" />
+          </Key>
+          <Property Name="RendelésFK" Type="Byte" />
+          <Property Name="TermékFK" Type="Byte" />
+          <Property Name="Mennyiség" Type="Int32" />
+          <Property Name="RendelelésazonosítóSK" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Rendelés" Relationship="Self.FK_Rendelt_Termék_Rendelés1" FromRole="Rendelt_Termék" ToRole="Rendelés" />
+          <NavigationProperty Name="Termék" Relationship="Self.FK_Rendelt_Termék_Termék1" FromRole="Rendelt_Termék" ToRole="Termék" />
+        </EntityType>
+        <EntityType Name="Termék">
+          <Key>
+            <PropertyRef Name="TermékSK" />
+          </Key>
+          <Property Name="TermékSK" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TermékNév" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="KategoriaFK" Type="Byte" />
+          <Property Name="MárkaFK" Type="Byte" />
+          <Property Name="Ár" Type="Int32" />
+          <Property Name="Elemszám" Type="Byte" />
+          <Property Name="Súly" Type="Int32" />
+          <Property Name="Méret" Type="Int32" />
+          <NavigationProperty Name="Kategoria" Relationship="Self.FK_Termék_Kategoria" FromRole="Termék" ToRole="Kategoria" />
+          <NavigationProperty Name="Márka" Relationship="Self.FK_Termék_Márka" FromRole="Termék" ToRole="Márka" />
+          <NavigationProperty Name="Rendelt_Termék" Relationship="Self.FK_Rendelt_Termék_Termék1" FromRole="Termék" ToRole="Rendelt_Termék" />
+        </EntityType>
+        <EntityType Name="Vásárló">
+          <Key>
+            <PropertyRef Name="VásárlóSK" />
+          </Key>
+          <Property Name="VásárlóSK" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Név" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="Cím" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="Email_cím" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Rendelés" Relationship="Self.FK_Rendelés_Vásárló" FromRole="Vásárló" ToRole="Rendelés" />
+        </EntityType>
+        <Association Name="FK_Rendelés_FizetésiMód">
+          <End Role="FizetésiMód" Type="Self.FizetésiMód" Multiplicity="0..1" />
+          <End Role="Rendelés" Type="Self.Rendelés" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FizetésiMód">
+              <PropertyRef Name="FizetésimódSK" />
+            </Principal>
+            <Dependent Role="Rendelés">
+              <PropertyRef Name="FizetésimódFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Termék_Kategoria">
+          <End Role="Kategoria" Type="Self.Kategoria" Multiplicity="0..1" />
+          <End Role="Termék" Type="Self.Termék" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kategoria">
+              <PropertyRef Name="KategoriaSK" />
+            </Principal>
+            <Dependent Role="Termék">
+              <PropertyRef Name="KategoriaFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Termék_Márka">
+          <End Role="Márka" Type="Self.Márka" Multiplicity="0..1" />
+          <End Role="Termék" Type="Self.Termék" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Márka">
+              <PropertyRef Name="MárkaSK" />
+            </Principal>
+            <Dependent Role="Termék">
+              <PropertyRef Name="MárkaFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelés_Vásárló">
+          <End Role="Vásárló" Type="Self.Vásárló" Multiplicity="0..1" />
+          <End Role="Rendelés" Type="Self.Rendelés" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vásárló">
+              <PropertyRef Name="VásárlóSK" />
+            </Principal>
+            <Dependent Role="Rendelés">
+              <PropertyRef Name="VásárlóFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelt_Termék_Rendelés1">
+          <End Role="Rendelés" Type="Self.Rendelés" Multiplicity="0..1" />
+          <End Role="Rendelt_Termék" Type="Self.Rendelt_Termék" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rendelés">
+              <PropertyRef Name="RendelésSK" />
+            </Principal>
+            <Dependent Role="Rendelt_Termék">
+              <PropertyRef Name="RendelésFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelt_Termék_Termék1">
+          <End Role="Termék" Type="Self.Termék" Multiplicity="0..1" />
+          <End Role="Rendelt_Termék" Type="Self.Rendelt_Termék" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Termék">
+              <PropertyRef Name="TermékSK" />
+            </Principal>
+            <Dependent Role="Rendelt_Termék">
+              <PropertyRef Name="TermékFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Butor_rendelesEntities6" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="FizetésiMód" EntityType="Self.FizetésiMód" />
+          <EntitySet Name="Kategoria" EntityType="Self.Kategoria" />
+          <EntitySet Name="Márka" EntityType="Self.Márka" />
+          <EntitySet Name="Rendelés" EntityType="Self.Rendelés" />
+          <EntitySet Name="Rendelt_Termék" EntityType="Self.Rendelt_Termék" />
+          <EntitySet Name="Termék" EntityType="Self.Termék" />
+          <EntitySet Name="Vásárló" EntityType="Self.Vásárló" />
+          <AssociationSet Name="FK_Rendelés_FizetésiMód" Association="Self.FK_Rendelés_FizetésiMód">
+            <End Role="FizetésiMód" EntitySet="FizetésiMód" />
+            <End Role="Rendelés" EntitySet="Rendelés" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Termék_Kategoria" Association="Self.FK_Termék_Kategoria">
+            <End Role="Kategoria" EntitySet="Kategoria" />
+            <End Role="Termék" EntitySet="Termék" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Termék_Márka" Association="Self.FK_Termék_Márka">
+            <End Role="Márka" EntitySet="Márka" />
+            <End Role="Termék" EntitySet="Termék" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelés_Vásárló" Association="Self.FK_Rendelés_Vásárló">
+            <End Role="Vásárló" EntitySet="Vásárló" />
+            <End Role="Rendelés" EntitySet="Rendelés" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelt_Termék_Rendelés1" Association="Self.FK_Rendelt_Termék_Rendelés1">
+            <End Role="Rendelés" EntitySet="Rendelés" />
+            <End Role="Rendelt_Termék" EntitySet="Rendelt_Termék" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelt_Termék_Termék1" Association="Self.FK_Rendelt_Termék_Termék1">
+            <End Role="Termék" EntitySet="Termék" />
+            <End Role="Rendelt_Termék" EntitySet="Rendelt_Termék" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Butor_rendelesModelStoreContainer" CdmEntityContainer="Butor_rendelesEntities6">
+          <EntitySetMapping Name="FizetésiMód">
+            <EntityTypeMapping TypeName="Butor_rendelesModel.FizetésiMód">
+              <MappingFragment StoreEntitySet="FizetésiMód">
+                <ScalarProperty Name="FizetésimódSK" ColumnName="FizetésimódSK" />
+                <ScalarProperty Name="Mód" ColumnName="Mód" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Kategoria">
+            <EntityTypeMapping TypeName="Butor_rendelesModel.Kategoria">
+              <MappingFragment StoreEntitySet="Kategoria">
+                <ScalarProperty Name="KategoriaSK" ColumnName="KategoriaSK" />
+                <ScalarProperty Name="Kategoria_név" ColumnName="Kategoria_név" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Márka">
+            <EntityTypeMapping TypeName="Butor_rendelesModel.Márka">
+              <MappingFragment StoreEntitySet="Márka">
+                <ScalarProperty Name="MárkaSK" ColumnName="MárkaSK" />
+                <ScalarProperty Name="Márka_Név" ColumnName="Márka_Név" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rendelés">
+            <EntityTypeMapping TypeName="Butor_rendelesModel.Rendelés">
+              <MappingFragment StoreEntitySet="Rendelés">
+                <ScalarProperty Name="RendelésSK" ColumnName="RendelésSK" />
+                <ScalarProperty Name="VásárlóFK" ColumnName="VásárlóFK" />
+                <ScalarProperty Name="Rendelés_Dátum" ColumnName="Rendelés_Dátum" />
+                <ScalarProperty Name="Összeszerelés" ColumnName="Összeszerelés" />
+                <ScalarProperty Name="FizetésimódFK" ColumnName="FizetésimódFK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rendelt_Termék">
+            <EntityTypeMapping TypeName="Butor_rendelesModel.Rendelt_Termék">
+              <MappingFragment StoreEntitySet="Rendelt_Termék">
+                <ScalarProperty Name="RendelésFK" ColumnName="RendelésFK" />
+                <ScalarProperty Name="TermékFK" ColumnName="TermékFK" />
+                <ScalarProperty Name="Mennyiség" ColumnName="Mennyiség" />
+                <ScalarProperty Name="RendelelésazonosítóSK" ColumnName="RendelelésazonosítóSK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Termék">
+            <EntityTypeMapping TypeName="Butor_rendelesModel.Termék">
+              <MappingFragment StoreEntitySet="Termék">
+                <ScalarProperty Name="TermékSK" ColumnName="TermékSK" />
+                <ScalarProperty Name="TermékNév" ColumnName="TermékNév" />
+                <ScalarProperty Name="KategoriaFK" ColumnName="KategoriaFK" />
+                <ScalarProperty Name="MárkaFK" ColumnName="MárkaFK" />
+                <ScalarProperty Name="Ár" ColumnName="Ár" />
+                <ScalarProperty Name="Elemszám" ColumnName="Elemszám" />
+                <ScalarProperty Name="Súly" ColumnName="Súly" />
+                <ScalarProperty Name="Méret" ColumnName="Méret" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Vásárló">
+            <EntityTypeMapping TypeName="Butor_rendelesModel.Vásárló">
+              <MappingFragment StoreEntitySet="Vásárló">
+                <ScalarProperty Name="VásárlóSK" ColumnName="VásárlóSK" />
+                <ScalarProperty Name="Név" ColumnName="Név" />
+                <ScalarProperty Name="Cím" ColumnName="Cím" />
+                <ScalarProperty Name="Email_cím" ColumnName="Email_cím" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
